@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import { Button } from '@material-ui/core/';
+import { Button, Typography } from '@material-ui/core/';
 import { Link } from 'react-router-dom';
 import { employeeService } from '../services/EmployeeService';
 import SaveIcon from '@material-ui/icons/Save';
@@ -24,40 +24,54 @@ const styles = theme => ({
       margin: theme.spacing(2),
     },
   },
+  error: {
+    fontWeight: 'bold',
+    color: theme.palette.error.main
+  }
 });
 
 class EditEmployee extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            _id: '',
-            fullname: '',
-            gender: '',
-            contacts: '',
-            position: '',
-            salary: 0
+          _id: '',
+          fullname: '',
+          gender: '',
+          contacts: '',
+          position: '',
+          salary: 0,
+          errorMessage: null
         }
+    }
+
+    setErrorMessage(error){
+      this.setState({error});
+    }
+
+    clearErrorMessage(){
+      this.setState({error: null});
     }
 
     async componentDidMount(){
         try{
-            
-        const { id } = this.props.match.params;
+            const { id } = this.props.match.params;
             if(!id)
                 return;
     
             const result = await employeeService.getById(id);
-
             if(!result)
                 return;
 
-            const properties = Object.keys(this.state);
-
-            properties.map(value => {
-                this.setState({[value]:result.data[value]});
+            const neededProperties = Object.keys(this.state);
+            const employee = {};
+            neededProperties.map(value => {
+                employee[value] = result.data[value];
             });
+
+            this.setState(employee);
+            console.log(this.state);
         }catch(e){
-            console.log(e);
+            this.setErrorMessage('Произошла ошибка');
         }   
     }
 
@@ -65,26 +79,27 @@ class EditEmployee extends React.Component {
         this.setState({[e.target.name]: e.target.value})
     }
 
-    async handleSave(){
+    async handleSave(e){
+      try{
+        e.preventDefault();
+        this.clearErrorMessage();
         const { history } = this.props;
         const userObject = {...this.state};
 
         delete userObject._id;
+        delete userObject.errorMessage;
+        
         const response = await employeeService.patchById(this.state._id, userObject);
-
-        // if(!response.data.user){
-
-        // }else{
-        //     history.push('/');
-        // }
-
         history.push('/');
+      }catch(e){
+        this.setErrorMessage('Произошла ошибка');
+      }
     }
 
     render(){
         const {classes } = this.props;
         return(
-        <form className={classes.root}>
+        <form onSubmit={this.handleSave.bind(this)} className={classes.root}>
       <TextField
         name='fullname'
         label="Fullname"
@@ -128,14 +143,14 @@ class EditEmployee extends React.Component {
       />
       <div>
         <Button variant="outlined" component={Link} to='/'><ClearIcon/>Cancel</Button>
-        <Button variant="outlined" color="primary" 
-        onClick={this.handleSave.bind(this)}
+        <Button type="submit" variant="outlined" color="primary" 
+        // onClick={this.handleSave.bind(this)}
         ><SaveIcon/>Save
         </Button>
       </div>
-      {/* <div>
-          <Typography>Error. Try again.</Typography>
-      </div> */}
+      <div>
+      { this.state.errorMessage ? <Typography className={classes.errorMessage}>{this.state.errorMessage}</Typography> : ""}
+      </div>
     </form>
         );
     }

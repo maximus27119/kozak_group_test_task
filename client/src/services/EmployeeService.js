@@ -1,48 +1,23 @@
 import $api from '../http';
 
-async function insert(employee) {
-    try {
-        const response = await $api.post('/employees', employee);
-        return response;
-    }catch(e){
-        console.log(e);
-    }
+function insert(employee) {
+    return $api.post('/employees', employee);
 }
 
-async function list() {
-    try {
-        const response = await $api.get('/employees');
-        return response;
-    }catch(e){
-        console.log(e);
-    }
+function list() {
+    return $api.get('/employees');
 }
 
-async function getById(id) {
-    try {
-        const response = await $api.get(`/employees/${id}`);
-        return response;
-    }catch(e){
-        console.log(e);
-    }
+function getById(id) {
+    return $api.get(`/employees/${id}`);
 }
 
-async function patchById(id, data) {
-    try {
-        const response = await $api.patch(`/employees/${id}`, data);
-        return response;
-    }catch(e){
-        console.log(e);
-    }
+function patchById(id, data) {
+    return $api.patch(`/employees/${id}`, data);
 }
 
-async function removeById(id) {
-    try {
-        const response = await $api.delete(`/employees/${id}`);
-        return response;
-    }catch(e){
-        console.log(e);
-    }
+function removeById(id) {
+    return $api.delete(`/employees/${id}`);
 }
 
 export const employeeService = {

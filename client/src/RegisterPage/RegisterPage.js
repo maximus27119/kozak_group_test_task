@@ -1,8 +1,17 @@
-import React, { useState } from 'react';
-import { makeStyles } from '@material-ui/core';
+import React, {
+  useState
+} from 'react';
+import {
+  makeStyles,
+  Typography
+} from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { useHistory, Link, Redirect } from 'react-router-dom';
+import {
+  useHistory,
+  Link,
+  Redirect
+} from 'react-router-dom';
 import AuthService from '../services/AuthService';
 
 const useStyles = makeStyles(theme => ({
@@ -21,33 +30,53 @@ const useStyles = makeStyles(theme => ({
       margin: theme.spacing(2),
     },
   },
+  error: {
+    fontWeight: 'bold',
+    color: theme.palette.error.main
+  }
 }));
 
 const RegisterPage = () => {
+  const history = useHistory();
+  if (localStorage.getItem('token'))
+    history.push('/');
+
   const classes = useStyles();
-  // create state variables for each input
   const [login, setLogin] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const history = useHistory();
+  const [errorMessage, setErrorMessage] = useState(null);
 
-  const handleRegister = async e => {
-        try{
-            const result = await AuthService.registration(login, email, password);
-            if(result.data.user){
-              localStorage.setItem('user', result.data.user);
-              localStorage.setItem('token', result.data.token);
-              history.push('/');
-          }
-        }catch(e){
-            console.log(e);
-        }
+  const clearErrorMessage = () => {
+    setErrorMessage(null);
+  }
+
+  const handleRegister = async (e) => {
+    try {
+      e.preventDefault();
+      clearErrorMessage();
+      const result = await AuthService.registration(login, email, password);
+      if (result.data.user) {
+        localStorage.setItem('user', result.data.user);
+        localStorage.setItem('token', result.data.token);
+        history.push('/');
+      }
+    }catch(error){
+      if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+      } else if (error.request && error.request.response) {
+          const responseObject = JSON.parse(error.request.response);
+          setErrorMessage(responseObject.message);
+      } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log('Error', error.message);
+      }
+    }
   };
 
   return (
-      <div>
-      {localStorage.getItem('token') ? <Redirect to='/' /> : ''}
-    <form className={classes.root}>
+    <form onSubmit={handleRegister} className={classes.root}>
       <TextField
         label="Login"
         variant="outlined"
@@ -72,16 +101,18 @@ const RegisterPage = () => {
         onChange={e => setPassword(e.target.value)}
       />
       <div>
-        <Button variant="outlined" color="primary" onClick={handleRegister}>
+        <Button type="submit" variant="outlined" color="primary">
           Sign Up
         </Button>
       </div>
       <div>
           <p>Already have an account? <Link to="/login">Sign in</Link></p>
       </div>
+      <div>
+      { errorMessage ? <Typography className={classes.error}>{errorMessage}</Typography> : ""}
+      </div>
     </form>
-    </div>
   );
 };
 
-export default RegisterPage; 
+export default RegisterPage;

@@ -7,8 +7,12 @@ export const DeleteButton = (props) => {
     const id = props.id;
 
     const handleClick = () => {
-        employeeService.removeById(id);
-        window.location.reload();
+        try{
+            employeeService.removeById(id);
+            window.location.reload();
+        }catch(e){
+            console.log(e);
+        }
     };
 
     return (

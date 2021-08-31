@@ -1,7 +1,7 @@
 import React from 'react';
 import { withStyles } from '@material-ui/core/styles';
 import TextField from '@material-ui/core/TextField';
-import { Button } from '@material-ui/core/';
+import { Button, Typography } from '@material-ui/core/';
 import { Link } from 'react-router-dom';
 import { employeeService } from '../services/EmployeeService';
 import SaveIcon from '@material-ui/icons/Save';
@@ -24,88 +24,110 @@ const styles = theme => ({
       margin: theme.spacing(2),
     },
   },
+  errorMessage: {
+    fontWeight: 'bold',
+    color: theme.palette.error.main
+  }
 });
 
 class AddEmployee extends React.Component {
     constructor(props){
         super(props);
         this.state = {
-            fullname: '',
-            gender: '',
-            contacts: '',
-            position: '',
-            salary: 0
+          fullname: '',
+          gender: '',
+          contacts: '',
+          position: '',
+          salary: 0,
+          errorMessage: null
         }
+    }
+
+    setErrorMessage(message){
+      this.setState({errorMessage: message});
+    }
+
+    clearErrorMessage(){
+      this.setState({errorMessage: null});
     }
 
     handleChange(e){
         this.setState({[e.target.name]: e.target.value})
     }
 
-    async handleSave(){
+    async handleSave(e){
+      try{
+        e.preventDefault();
+        this.clearErrorMessage();
         const { history } = this.props;
         const userObject = {...this.state};
         userObject.salary = +userObject.salary;
+
+        delete userObject.errorMessage;
+        
         const response = await employeeService.insert(userObject);
-        history.push('/');
+        history.push('/');        
+      }catch(e){
+        this.setErrorMessage('Произошла ошибка');
+      }
     }
 
     render(){
         const {classes } = this.props;
         return(
-        <form className={classes.root}>
-      <TextField
-        name='fullname'
-        label="Fullname"
-        variant="outlined"
-        required
-        value={this.state.fullname}
-        onChange={this.handleChange.bind(this)}
-      />
-      <TextField
-        name='gender'
-        label="Gender"
-        variant="outlined"
-        required
-        value={this.state.gender}
-        onChange={this.handleChange.bind(this)}
-      />
-      <TextField
-        name='contacts'
-        label="Contacts"
-        variant="outlined"
-        required
-        value={this.state.contacts}
-        onChange={this.handleChange.bind(this)}
-      />
-      <TextField
-        name='position'
-        label="Position"
-        variant="outlined"
-        required
-        value={this.state.position}
-        onChange={this.handleChange.bind(this)}
-      />
-      <TextField
-        name='salary'
-        label="Salary"
-        type="number"
-        variant="outlined"
-        required
-        value={this.state.salary}
-        onChange={this.handleChange.bind(this)}
-      />
-      <div>
-        <Button variant="outlined" component={Link} to='/'><ClearIcon/>Cancel</Button>
-        <Button variant="outlined" color="primary" 
-        onClick={this.handleSave.bind(this)}
-        ><SaveIcon/>Save
-        </Button>
-      </div>
-      {/* <div>
-          <Typography>Error. Try again.</Typography>
-      </div> */}
-    </form>
+        <form onSubmit={this.handleSave.bind(this)} className={classes.root}>
+          <TextField
+            name='fullname'
+            label="Fullname"
+            variant="outlined"
+            required
+            value={this.state.fullname}
+            onChange={this.handleChange.bind(this)}
+          />
+          <TextField
+            name='gender'
+            label="Gender"
+            variant="outlined"
+            required
+            value={this.state.gender}
+            onChange={this.handleChange.bind(this)}
+          />
+          <TextField
+            name='contacts'
+            label="Contacts"
+            variant="outlined"
+            required
+            value={this.state.contacts}
+            onChange={this.handleChange.bind(this)}
+          />
+          <TextField
+            name='position'
+            label="Position"
+            variant="outlined"
+            required
+            value={this.state.position}
+            onChange={this.handleChange.bind(this)}
+          />
+          <TextField
+            name='salary'
+            label="Salary"
+            type="number"
+            variant="outlined"
+            required
+            value={this.state.salary}
+            onChange={this.handleChange.bind(this)}
+          />
+          <div>
+            <Button variant="outlined" component={Link} to='/'><ClearIcon/>Cancel</Button>
+            <Button variant="outlined" type="submit" color="primary" 
+            // onClick={this.handleSave.bind(this)}
+            ><SaveIcon/>Save
+            </Button>
+          </div>
+          <div>
+          { this.state.errorMessage ? <Typography className={classes.errorMessage}>{this.state.errorMessage}</Typography> : ""}
+          </div>
+        </form>
         );
     }
 

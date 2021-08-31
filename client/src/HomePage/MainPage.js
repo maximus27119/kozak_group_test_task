@@ -65,8 +65,15 @@ class MainPage extends React.Component {
     }
 
     componentDidMount = async () => {
-        const response = await employeeService.list();
-        this.setState({employees : response.data});
+        try{
+            const response = await employeeService.list();
+            if(!response){
+                return;
+            }
+            this.setState({employees : response.data});
+        }catch(e){
+            console.log(e);
+        }
     }
 
     render(){
