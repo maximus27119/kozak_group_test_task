@@ -22,12 +22,6 @@ const userSchema = new mongoose.Schema({
         trim: true,
         minlength: 6
     },
-    // tokens: [{
-    //     token: {
-    //         type: String,
-    //         required: true
-    //     }
-    // }],
 },{
     timestamps: true
 });
@@ -52,24 +46,6 @@ userSchema.methods.toJSON = function () {
 
     return userObject;
 }
-
-// TODO 3:
-// Change this method
-// userSchema.statics.findByCredentials = async (email, password) => {
-//     const user = await User.findOne({email});
-
-//     if(!user) {
-//         throw new Error("Unnable to log in");
-//     }
-
-//     const match = await bcryptjs.compare(password, user.password);
-
-//     if(!match) {
-//         throw new Error("Unnable to log in");
-//     }
-
-//     return user;
-// };
 
 const User = mongoose.model('User', userSchema);
 

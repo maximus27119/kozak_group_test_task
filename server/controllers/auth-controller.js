@@ -6,8 +6,6 @@ class AuthController {
     async registration(req, res, next){
         try{
             const {login, email, password} = req.body;
-            console.log(`${login} ${email} ${password}`);
-            console.log(`${!login} ${!email} ${!password}`);
 
             if(!email || !validator.isEmail(email) || validator.isEmpty(email))
                 throw ApiError.BadRequest('Не верный email.')
@@ -37,7 +35,6 @@ class AuthController {
     async login(req, res, next){
         try{
             const {login, password} = req.body;
-            console.log(`${login} ${password}`);
             
             if(!login || validator.isEmpty(login))
                 throw ApiError.BadRequest('Не верный логин.')

@@ -8,11 +8,8 @@ class EmployeeController{
             const {fullname, gender, contacts, salary, position} = req.body;
             let isDataValid = true;
 
-            console.log(req.body);
-            
             if(!fullname || validator.isEmpty(fullname) || !position || validator.isEmpty(position)){
-                isDataValid = false;   
-                console.log("Не правильное имя или должность");
+                isDataValid = false; // Не правильное имя или должность
             }
                 
             if(!isDataValid)
@@ -34,21 +31,11 @@ class EmployeeController{
 
     async list(req, res, next){
         try{
-            console.log(req.query);
             const { query } = req;
             
             let match = query.filter ? JSON.parse(query.filter) : {};
             let sort  = query.sort   ? JSON.parse(query.sort)   : { createdAt: 1};
             let range = query.range  ? JSON.parse(query.range)  : [0, 20];
-            
-            console.log(`Range object:`);
-            console.log(range);
-    
-            console.log(`Sort object:`);
-            console.log(sort);
-    
-            console.log(`Filter object:`);
-            console.log(match);
             
             const result = await employeeService.list({match, sort, range})
 
