@@ -12,8 +12,8 @@ $api.interceptors.request.use((config) => {
     return config;
 });
 
-$api.interceptors.response.use((response) => {
-    return response;
+$api.interceptors.response.use((response) => { // By default, axios doesn't return response, when it comes with error code.
+    return response;                           // this interceptor allows to read error response, which comes from server.
 }, function (error) {
     return Promise.reject(error.response);
 });

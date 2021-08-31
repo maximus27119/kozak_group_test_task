@@ -1,17 +1,8 @@
-import React, {
-  useState
-} from 'react';
-import {
-  makeStyles,
-  Typography
-} from '@material-ui/core';
+import React, { useState } from 'react';
+import { makeStyles, Typography } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import {
-  useHistory,
-  Link,
-  Redirect
-} from 'react-router-dom';
+import { useHistory, Link } from 'react-router-dom';
 import AuthService from '../services/AuthService';
 
 const useStyles = makeStyles(theme => ({

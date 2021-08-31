@@ -71,6 +71,7 @@ class MainPage extends React.Component {
                 return;
             }
             this.setState({employees : response.data});
+            console.log(this.state);
         }catch(e){
             console.log(e);
         }
@@ -81,7 +82,7 @@ class MainPage extends React.Component {
         const { page, rowsPerPage } = this.state;
         return (
             <div>
-                <Header className={classes.header}/>
+                <Header className={classes.header} mainPage={this}/>
                 <TableContainer component={Paper} className={classes.tableContainer}>
                     <Table className={classes.table} aria-label="simple table">
                         <TableHead>

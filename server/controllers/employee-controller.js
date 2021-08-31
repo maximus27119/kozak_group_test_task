@@ -32,6 +32,8 @@ class EmployeeController{
     async list(req, res, next){
         try{
             const { query } = req;
+
+            console.log(`${query.filter} ${query.sort} ${query.range}`)
             
             let match = query.filter ? JSON.parse(query.filter) : {};
             let sort  = query.sort   ? JSON.parse(query.sort)   : { createdAt: 1};

@@ -8,6 +8,10 @@ function list() {
     return $api.get('/employees');
 }
 
+function quickSearch(word) {
+    return $api.get(`/employees?filter={"fullname":{"$regex":".*${word || ''}.*"}}`);
+}
+
 function getById(id) {
     return $api.get(`/employees/${id}`);
 }
@@ -23,6 +27,7 @@ function removeById(id) {
 export const employeeService = {
     insert,
     list,
+    quickSearch,
     getById,
     patchById,
     removeById
