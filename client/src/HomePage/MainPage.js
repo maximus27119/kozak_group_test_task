@@ -19,31 +19,31 @@ import Header from '../components/Header';
 import { employeeService } from '../services/EmployeeService';
 
 const styles = (theme) => ({
-    // table: {
-    //   minWidth: 850,
-    // },
     tableContainer: {
         borderRadius: 5,
         margin: '10px 0px',
         // maxWidth: 1650
+        width: '80vw',
+        height: '80vh'
     },
     tableHeaderCell: {
+        height: '20%',
         fontWeight: 'bold',
         backgroundColor: theme.palette.info.light,
-        color: theme.palette.getContrastText(theme.palette.info.main)
+        color: theme.palette.getContrastText(theme.palette.info.light)
     },
     tableActionsHeaderCell: {
         textAlign: 'center'
     },
     name: {
         fontWeight: 'bold',
-        color: theme.palette.secondary.main
+        // color: theme.palette.secondary.main
     },
     header: {
         display: 'flex',
         flexDirection: 'row',
         justifyContent: 'space-between'
-    }
+    },
 });
 
 class MainPage extends React.Component {
@@ -52,7 +52,7 @@ class MainPage extends React.Component {
         this.state = {
             employees: [],
             page: 0,
-            rowsPerPage: 5
+            rowsPerPage: 7
         }
     }
 
@@ -84,7 +84,7 @@ class MainPage extends React.Component {
             <div>
                 <Header className={classes.header} mainPage={this}/>
                 <TableContainer component={Paper} className={classes.tableContainer}>
-                    <Table className={classes.table} aria-label="simple table">
+                    <Table aria-label="simple table">
                         <TableHead>
                             <TableRow>
                                 <TableCell className={classes.tableHeaderCell}>Full Name</TableCell>
@@ -121,7 +121,7 @@ class MainPage extends React.Component {
                                 </TableCell>
                                 <TableCell>
                                     <Typography color="primary" variant="subtitle2"
-                                    >{row.salary}</Typography>
+                                    >{row.salary}$</Typography>
                                 </TableCell>
                                 <TableCell>
                                     <Grid container>
@@ -138,8 +138,8 @@ class MainPage extends React.Component {
                         </TableBody>
                         <TableFooter>
                             <TablePagination
-                                rowsPerPageOptions={[5, 10]}
-                                component="div"
+                                rowsPerPageOptions={[7]}
+                                // component="div"
                                 count={this.state.employees.length}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
