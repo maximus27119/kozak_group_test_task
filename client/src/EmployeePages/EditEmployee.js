@@ -1,14 +1,12 @@
-import React from 'react';
-import { withStyles } from '@material-ui/core/styles';
+import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
-import { Button, Typography } from '@material-ui/core/';
-import { Link } from 'react-router-dom';
-import { employeeService } from '../services/EmployeeService';
+import { Button, Typography, makeStyles } from '@material-ui/core/';
+import { Link, useHistory } from 'react-router-dom';
+import employeeService from '../services/EmployeeService';
 import SaveIcon from '@material-ui/icons/Save';
 import ClearIcon from '@material-ui/icons/Clear';
-import { withRouter } from 'react-router-dom';
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   root: {
     display: 'flex',
     flexDirection: 'column',
@@ -28,133 +26,113 @@ const styles = theme => ({
     fontWeight: 'bold',
     color: theme.palette.error.main
   }
-});
+}));
 
-class EditEmployee extends React.Component {
-    constructor(props){
-        super(props);
-        this.state = {
-          _id: '',
-          fullname: '',
-          gender: '',
-          contacts: '',
-          position: '',
-          salary: 0,
-          errorMessage: null
+const EditEmployee = (props) => {
+    const [id, setId ] = useState(props.match.params.id || '');
+    const [fullname, setFullname] = useState('');
+    const [gender, setGender] = useState('');
+    const [contacts, setContacts] = useState('');
+    const [position, setPosition] = useState('');
+    const [salary, setSalary] = useState(0);
+    const [errorMessage, setErrorMessage] = useState(null);
+
+    const classes = useStyles();
+    const history = useHistory();
+
+    const clearErrorMessage = () => {
+        setErrorMessage(null);
+    }
+
+    const setEmployeeToState = ({fullname, gender, contacts, position, salary}) => {
+        setFullname(fullname);
+        setGender(gender);
+        setContacts(contacts)
+        setPosition(position);
+        setSalary(salary);
+    }
+
+    useEffect(() => {
+        const fetchData = async () => {
+            try{
+                const result = await employeeService.getById(id);
+                
+                if(!result || !result.data)
+                    return;
+                
+                setEmployeeToState(result.data);
+            }catch(e){
+                setErrorMessage('Произошла ошибка');
+            }   
+        };
+        
+        fetchData();
+    },[]);
+
+    const handleSubmit = async (e) =>{
+        try{
+            e.preventDefault();
+            clearErrorMessage();
+            const userObject = {fullname, gender, contacts, position, salary};
+            const response = await employeeService.patchById(id, userObject);
+            history.push('/');
+        }catch(e){
+            setErrorMessage('Произошла ошибка');
         }
     }
 
-    setErrorMessage(error){
-      this.setState({error});
-    }
+    return(
+        <form onSubmit={handleSubmit} className={classes.root}>
+            <TextField
+                name='fullname'
+                label="Fullname"
+                variant="outlined"
+                required
+                value={fullname}
+                onChange={e => setFullname(e.target.value)}
+            />
+            <TextField
+                name='gender'
+                label="Gender"
+                variant="outlined"
+                required
+                value={gender}
+                onChange={e => setGender(e.target.value)}
+            />
+            <TextField
+                name='contacts'
+                label="Contacts"
+                variant="outlined"
+                required
+                value={contacts}
+                onChange={e => setContacts(e.target.value)}
+            />
+            <TextField
+                name='position'
+                label="Position"
+                variant="outlined"
+                required
+                value={position}
+                onChange={e => setPosition(e.target.value)}
+            />
+            <TextField
+                name='salary'
+                label="Salary"
+                type="number"
+                variant="outlined"
+                required
+                value={salary}
+                onChange={e => setSalary(e.target.value)}
+            />
+            <div>
+                <Button variant="outlined" component={Link} to='/'><ClearIcon/>Cancel</Button>
+                <Button type="submit" variant="outlined" color="primary"><SaveIcon/>Save</Button>
+            </div>
+            <div>
+            { errorMessage ? <Typography className={classes.errorMessage}>{errorMessage}</Typography> : ""}
+            </div>
+        </form>
+    );
+};
 
-    clearErrorMessage(){
-      this.setState({error: null});
-    }
-
-    async componentDidMount(){
-        try{
-            const { id } = this.props.match.params;
-            if(!id)
-                return;
-    
-            const result = await employeeService.getById(id);
-            if(!result)
-                return;
-
-            const neededProperties = Object.keys(this.state);
-            const employee = {};
-            neededProperties.map(value => {
-                employee[value] = result.data[value];
-            });
-
-            this.setState(employee);
-            console.log(this.state);
-        }catch(e){
-            this.setErrorMessage('Произошла ошибка');
-        }   
-    }
-
-    handleChange(e){
-        this.setState({[e.target.name]: e.target.value})
-    }
-
-    async handleSave(e){
-      try{
-        e.preventDefault();
-        this.clearErrorMessage();
-        const { history } = this.props;
-        const userObject = {...this.state};
-
-        delete userObject._id;
-        delete userObject.errorMessage;
-        
-        const response = await employeeService.patchById(this.state._id, userObject);
-        history.push('/');
-      }catch(e){
-        this.setErrorMessage('Произошла ошибка');
-      }
-    }
-
-    render(){
-        const {classes } = this.props;
-        return(
-        <form onSubmit={this.handleSave.bind(this)} className={classes.root}>
-      <TextField
-        name='fullname'
-        label="Fullname"
-        variant="outlined"
-        required
-        value={this.state.fullname}
-        onChange={this.handleChange.bind(this)}
-      />
-      <TextField
-        name='gender'
-        label="Gender"
-        variant="outlined"
-        required
-        value={this.state.gender}
-        onChange={this.handleChange.bind(this)}
-      />
-      <TextField
-        name='contacts'
-        label="Contacts"
-        variant="outlined"
-        required
-        value={this.state.contacts}
-        onChange={this.handleChange.bind(this)}
-      />
-      <TextField
-        name='position'
-        label="Position"
-        variant="outlined"
-        required
-        value={this.state.position}
-        onChange={this.handleChange.bind(this)}
-      />
-      <TextField
-        name='salary'
-        label="Salary"
-        type="number"
-        variant="outlined"
-        required
-        value={this.state.salary}
-        onChange={this.handleChange.bind(this)}
-      />
-      <div>
-        <Button variant="outlined" component={Link} to='/'><ClearIcon/>Cancel</Button>
-        <Button type="submit" variant="outlined" color="primary" 
-        // onClick={this.handleSave.bind(this)}
-        ><SaveIcon/>Save
-        </Button>
-      </div>
-      <div>
-      { this.state.errorMessage ? <Typography className={classes.errorMessage}>{this.state.errorMessage}</Typography> : ""}
-      </div>
-    </form>
-        );
-    }
-
-}
-
-export default withStyles(styles, { withTheme: true })(EditEmployee);
+export default EditEmployee;

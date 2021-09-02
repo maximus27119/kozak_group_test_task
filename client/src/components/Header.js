@@ -3,9 +3,9 @@ import Button from '@material-ui/core/Button';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 import { Link, useHistory } from 'react-router-dom';
-import AuthService from '../services/AuthService';
 import { makeStyles } from '@material-ui/core';
-import { Search } from './Search';
+import Search from './Search';
+import authService from '../services/AuthService';
 
 const useStyles = makeStyles((theme) => ( {
     header: {
@@ -15,13 +15,12 @@ const useStyles = makeStyles((theme) => ( {
     }
 }));
 
-export default function Header(props) {
+const Header = (props) => {
     const classes = useStyles();
-
     const history = useHistory();
 
     const handleLogout = () => {
-        AuthService.logout();
+        authService.logout();
         history.push('/');
     }
 
@@ -33,3 +32,5 @@ export default function Header(props) {
     </div>
   );
 }
+
+export default Header;

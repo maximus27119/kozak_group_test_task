@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import SearchIcon from '@material-ui/icons/Search';
 import { Button, TextField } from '@material-ui/core';
-import { employeeService } from '../services/EmployeeService';
+import employeeService from '../services/EmployeeService';
 
 
-export const Search = (props) => {
+const Search = (props) => {
     const [searchRequest, setSearchRequest] = useState('');
     const mainPage = props.mainPage;
     const handleSubmit = async (e) => {
@@ -29,3 +29,5 @@ export const Search = (props) => {
         </form>
     )
 }
+
+export default Search;

@@ -3,7 +3,7 @@ import { makeStyles, Typography } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { useHistory, Link } from 'react-router-dom';
-import AuthService from '../services/AuthService';
+import authService from '../services/AuthService';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -46,7 +46,7 @@ const RegisterPage = () => {
     try {
       e.preventDefault();
       clearErrorMessage();
-      const result = await AuthService.registration(login, email, password);
+      const result = await authService.registration(login, email, password);
       if (result.data.user) {
         localStorage.setItem('user', result.data.user);
         localStorage.setItem('token', result.data.token);

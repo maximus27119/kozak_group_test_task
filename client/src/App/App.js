@@ -7,10 +7,9 @@ import RegisterPage from '../RegisterPage/RegisterPage';
 import AddEmployee from '../EmployeePages/AddEmployee';
 import EditEmployee from '../EmployeePages/EditEmployee';
 
-function App() {
+const App = () => {
   return (
     <div className="App">
-      {/* <Form2/> */}
       <Router>
         <div>
           <PrivateRoute exact path="/" component={MainPage} />

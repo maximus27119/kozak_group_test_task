@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-export const API_URL = process.env.NODE_ENV !== 'production' ? `http://localhost:${process.env.REACT_APP_SERVER_PORT}/api` : '/api';
+const API_URL = process.env.NODE_ENV !== 'production' ? `http://localhost:${process.env.REACT_APP_SERVER_PORT}/api` : '/api';
 
 const $api = axios.create({
     withCredentials: true,

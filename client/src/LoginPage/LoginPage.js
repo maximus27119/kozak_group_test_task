@@ -3,7 +3,7 @@ import { useHistory, Link } from "react-router-dom";
 import { makeStyles, Typography } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import AuthService from '../services/AuthService';
+import authService from '../services/AuthService';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -37,15 +37,15 @@ const LoginPage = () => {
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState(null);
 
-
   const clearErrorMessage = () =>{
     setErrorMessage(null);
   }
 
-  const handleLogin = async e => {
+  const handleSubmit = async e => {
     try{
+      e.preventDefault(); 
       clearErrorMessage();
-      const result = await AuthService.login(login, password);
+      const result = await authService.login(login, password);
       if(result.data.user){
         localStorage.setItem('user', result.data.user);
         localStorage.setItem('token', result.data.token);
@@ -67,7 +67,7 @@ const LoginPage = () => {
   };
 
   return (
-    <form className={classes.root}>
+    <form onSubmit={handleSubmit} className={classes.root}>
       <TextField
         name="login"
         label="Login"
@@ -86,7 +86,7 @@ const LoginPage = () => {
         onChange={e => setPassword(e.target.value)}
       />
       <div>
-        <Button variant="outlined" color="primary" onClick={handleLogin}>
+        <Button type="submit" variant="outlined" color="primary">
           Sign In
         </Button>
       </div>
@@ -100,4 +100,4 @@ const LoginPage = () => {
   );
 };
 
-export default LoginPage; 
+export default LoginPage;

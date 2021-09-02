@@ -1,34 +1,27 @@
 import $api from '../http';
 
-function insert(employee) {
-    return $api.post('/employees', employee);
+export default class employeeService{
+    static async insert(employee) {
+        return $api.post('/employees', employee);
+    }
+    
+    static async list() {
+        return $api.get('/employees');
+    }
+    
+    static async quickSearch(word) {
+        return $api.get(`/employees?filter={"fullname":{"$regex":".*${word || ''}.*"}}`);
+    }
+    
+    static async getById(id) {
+        return $api.get(`/employees/${id}`);
+    }
+    
+    static async patchById(id, data) {
+        return $api.patch(`/employees/${id}`, data);
+    }
+    
+    static async removeById(id) {
+        return $api.delete(`/employees/${id}`);
+    }
 }
-
-function list() {
-    return $api.get('/employees');
-}
-
-function quickSearch(word) {
-    return $api.get(`/employees?filter={"fullname":{"$regex":".*${word || ''}.*"}}`);
-}
-
-function getById(id) {
-    return $api.get(`/employees/${id}`);
-}
-
-function patchById(id, data) {
-    return $api.patch(`/employees/${id}`, data);
-}
-
-function removeById(id) {
-    return $api.delete(`/employees/${id}`);
-}
-
-export const employeeService = {
-    insert,
-    list,
-    quickSearch,
-    getById,
-    patchById,
-    removeById
-};

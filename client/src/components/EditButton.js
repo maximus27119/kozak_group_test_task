@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Button } from '@material-ui/core';
-import EditIcon from '@material-ui/icons/Edit';
 import { Link } from 'react-router-dom';
+import EditIcon from '@material-ui/icons/Edit';
 
-export const EditButton = (props) => {
+const EditButton = (props) => {
     const id = props.id;
 
     return (
@@ -12,3 +12,5 @@ export const EditButton = (props) => {
         </Link>
     )
 }
+
+export default EditButton;
