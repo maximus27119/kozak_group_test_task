@@ -13,7 +13,7 @@ const employeeSchema = new mongoose.Schema({
     },
     contacts: {
         type: String,
-        // required: true,
+        required: true,
         trim: true,
         default: ''
     },
