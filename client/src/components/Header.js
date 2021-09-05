@@ -19,6 +19,10 @@ const Header = (props) => {
     const classes = useStyles();
     const history = useHistory();
 
+    const handleEdit = () => {
+        history.push(`/add_employee`);
+    };
+
     const handleLogout = () => {
         authService.logout();
         history.push('/');
@@ -26,9 +30,9 @@ const Header = (props) => {
 
   return (
     <div className={classes.header}>
-        <Button component={Link} to='/add_employee' variant="contained" color='primary' startIcon={<PersonAddIcon/>} disableElevation>Add employee</Button>
-        <Search mainPage={props.mainPage}/>
-        <Button variant='contained' color='secondary' disableElevation onClick={handleLogout}><ExitToAppIcon/>Logout</Button>
+        <Button component={Link} to='/add_employee' variant="outlined" color='primary' startIcon={<PersonAddIcon/>} disableElevation>Add employee</Button>
+        <Search/>
+        <Button variant='outlined' color='secondary' disableElevation onClick={handleLogout}><ExitToAppIcon/>Logout</Button>
     </div>
   );
 }

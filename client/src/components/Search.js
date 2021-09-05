@@ -1,25 +1,18 @@
 import React, { useState } from 'react'
 import SearchIcon from '@material-ui/icons/Search';
 import { Button, TextField } from '@material-ui/core';
-import employeeService from '../services/EmployeeService';
+import { useDispatch } from 'react-redux';
+import { quickEmployeesSearch } from '../asyncActions/employees';
 
 
 const Search = (props) => {
     const [searchRequest, setSearchRequest] = useState('');
-    const mainPage = props.mainPage;
-    const handleSubmit = async (e) => {
-        try{
-            e.preventDefault();
-            const response = await employeeService.quickSearch(searchRequest);
-            console.log(response);
-            if(!response){
-                return;
-            }
-            mainPage.setState({employees : response.data});
-        }catch(e){
-            console.log(e);
-        }
+    
+    const dispatch = useDispatch();
 
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        dispatch(quickEmployeesSearch(searchRequest));
     }
 
     return (
