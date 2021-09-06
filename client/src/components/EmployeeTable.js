@@ -19,7 +19,7 @@ import EditIcon from '@material-ui/icons/Edit';
 import DeleteForeverIcon from '@material-ui/icons/DeleteForever';
 
 import { useHistory } from 'react-router-dom';
-import { getEmployees, deleteEmployee } from '../asyncActions/employees';
+import { fetchEmployees, deleteEmployee } from '../asyncActions/employees';
 
 const useStyles = makeStyles((theme) => ({
   tableContainer: {
@@ -56,7 +56,7 @@ const EmployeeTable = (props) => {
   }
 
   useEffect(() => {
-    dispatch(getEmployees());
+    dispatch(fetchEmployees());
   },[]);
 
   return (

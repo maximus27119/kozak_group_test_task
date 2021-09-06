@@ -2,10 +2,11 @@ import React from 'react';
 import Button from '@material-ui/core/Button';
 import PersonAddIcon from '@material-ui/icons/PersonAdd';
 import ExitToAppIcon from '@material-ui/icons/ExitToApp';
-import { Link, useHistory } from 'react-router-dom';
+import { useHistory } from 'react-router-dom';
 import { makeStyles } from '@material-ui/core';
 import Search from './Search';
-import authService from '../services/AuthService';
+import { useDispatch } from 'react-redux';
+import { logout } from '../asyncActions/auth';
 
 const useStyles = makeStyles((theme) => ( {
     header: {
@@ -19,20 +20,21 @@ const Header = (props) => {
     const classes = useStyles();
     const history = useHistory();
 
-    const handleEdit = () => {
+    const dispatch = useDispatch();
+
+    const handleAdd = () => {
         history.push(`/add_employee`);
     };
 
     const handleLogout = () => {
-        authService.logout();
-        history.push('/');
+        dispatch(logout());
     }
 
   return (
     <div className={classes.header}>
-        <Button component={Link} to='/add_employee' variant="outlined" color='primary' startIcon={<PersonAddIcon/>} disableElevation>Add employee</Button>
+        <Button onClick={handleAdd} variant="outlined" color='primary' startIcon={<PersonAddIcon/>} disableElevation>Add employee</Button>
         <Search/>
-        <Button variant='outlined' color='secondary' disableElevation onClick={handleLogout}><ExitToAppIcon/>Logout</Button>
+        <Button onClick={handleLogout} variant='outlined' color='secondary' startIcon={<ExitToAppIcon/>} disableElevation>Logout</Button>
     </div>
   );
 }

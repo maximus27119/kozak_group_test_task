@@ -3,7 +3,8 @@ import { useHistory, Link } from "react-router-dom";
 import { makeStyles, Typography } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import authService from '../services/AuthService';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser } from '../asyncActions/auth';
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -28,42 +29,22 @@ const useStyles = makeStyles(theme => ({
 }));
 
 const LoginPage = () => {
+  const auth = useSelector(state => state.auth);
+  const error = useSelector(state => state.error);
+
   const history = useHistory();
-  if (localStorage.getItem('token'))
+  if (auth.isAuthenticated)
     history.push('/');
   
   const classes = useStyles();
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
-  const [errorMessage, setErrorMessage] = useState(null);
 
-  const clearErrorMessage = () =>{
-    setErrorMessage(null);
-  }
+  const dispatch = useDispatch();
 
   const handleSubmit = async e => {
-    try{
-      e.preventDefault(); 
-      clearErrorMessage();
-      const result = await authService.login(login, password);
-      if(result.data.user){
-        localStorage.setItem('user', result.data.user);
-        localStorage.setItem('token', result.data.token);
-        history.push('/');
-      }
-    }catch(error){
-      if (error.response) {
-          // The request was made and the server responded with a status code
-          // that falls out of the range of 2xx
-      } else if (error.request && error.request.response) {
-          const responseObject = JSON.parse(error.request.response);
-          setErrorMessage(responseObject.message);
-      } else {
-          // Something happened in setting up the request that triggered an Error
-          console.log('Error', error.message);
-      }
-    }
-    
+    e.preventDefault();
+    dispatch(loginUser(login, password));
   };
 
   return (
@@ -94,7 +75,7 @@ const LoginPage = () => {
           <p>Don't have account? <Link to="/register">Sign up</Link></p>
       </div>
       <div>
-      { errorMessage ? <Typography className={classes.error}>{errorMessage}</Typography> : ""}
+      { error.message ? <Typography className={classes.error}>{error.message}</Typography> : ""}
       </div>
     </form>
   );

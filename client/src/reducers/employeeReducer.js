@@ -1,12 +1,10 @@
 import {
   GET_EMPLOYEES,
-  DELETE_EMPLOYEE,
-  EMPLOYEES_LOADING
+  DELETE_EMPLOYEE
 } from '../actions/types';
 
 const initialState = {
-  employees: [],
-  loading: false
+  employees: []
 };
 
 const employeeReducer = (state = initialState, action) => {
@@ -14,17 +12,12 @@ const employeeReducer = (state = initialState, action) => {
     case GET_EMPLOYEES:
       return {
         ...state,
-        employees: action.payload
+        employees: action.payload,
       };
     case DELETE_EMPLOYEE:
       return {
         ...state,
         employees: state.employees.filter(emp => emp._id !== action.payload)
-      };
-    case EMPLOYEES_LOADING:
-      return {
-        ...state,
-        loading: !state.loading
       };
     default:
       return state;
