@@ -73,25 +73,16 @@ const EmployeeForm = (props) => {
         fetchData();
     },[]);
 
-    const handleAdd = async (e) => {
-        try{
-            e.preventDefault();
-            clearErrorMessage();
-
-            const userObject = {fullname, gender, contacts, position, salary};        
-            const response = await employeeService.insert(userObject);
-            history.push('/');        
-        }catch(e){
-            setErrorMessage('Произошла ошибка');
-        }
-    }
-
-    const handleEdit = async (e) =>{
+    const handleSubmit = async (e) =>{
         try{
             e.preventDefault();
             clearErrorMessage();
             const userObject = {fullname, gender, contacts, position, salary};
-            const response = await employeeService.patchById(id, userObject);
+            if(type === "add")
+                await employeeService.insert(userObject);
+            else
+                await employeeService.patchById(id, userObject);
+            
             history.push('/');
         }catch(e){
             setErrorMessage('Произошла ошибка');
@@ -99,7 +90,7 @@ const EmployeeForm = (props) => {
     }
 
     return(
-        <form onSubmit={type === 'add' ? handleAdd : handleEdit} className={classes.root}>
+        <form onSubmit={handleSubmit} className={classes.root}>
             <TextField
                 name='fullname'
                 label="Fullname"
