@@ -28,7 +28,7 @@ const useStyles = makeStyles(theme => ({
   }
 }));
 
-const EditEmployee = (props) => {
+const EmployeeForm = (props) => {
     const [id, setId ] = useState(props.match.params.id || '');
     const [fullname, setFullname] = useState('');
     const [gender, setGender] = useState('');
@@ -36,6 +36,8 @@ const EditEmployee = (props) => {
     const [position, setPosition] = useState('');
     const [salary, setSalary] = useState(0);
     const [errorMessage, setErrorMessage] = useState(null);
+
+    const type = props.operationType || "add";
 
     const classes = useStyles();
     const history = useHistory();
@@ -53,6 +55,8 @@ const EditEmployee = (props) => {
     }
 
     useEffect(() => {
+        if(type === 'add')
+            return;
         const fetchData = async () => {
             try{
                 const result = await employeeService.getById(id);
@@ -69,7 +73,20 @@ const EditEmployee = (props) => {
         fetchData();
     },[]);
 
-    const handleSubmit = async (e) =>{
+    const handleAdd = async (e) => {
+        try{
+            e.preventDefault();
+            clearErrorMessage();
+
+            const userObject = {fullname, gender, contacts, position, salary};        
+            const response = await employeeService.insert(userObject);
+            history.push('/');        
+        }catch(e){
+            setErrorMessage('Произошла ошибка');
+        }
+    }
+
+    const handleEdit = async (e) =>{
         try{
             e.preventDefault();
             clearErrorMessage();
@@ -82,7 +99,7 @@ const EditEmployee = (props) => {
     }
 
     return(
-        <form onSubmit={handleSubmit} className={classes.root}>
+        <form onSubmit={type === 'add' ? handleAdd : handleEdit} className={classes.root}>
             <TextField
                 name='fullname'
                 label="Fullname"
@@ -129,10 +146,10 @@ const EditEmployee = (props) => {
                 <Button type="submit" variant="outlined" color="primary"><SaveIcon/>Save</Button>
             </div>
             <div>
-            { errorMessage ? <Typography className={classes.errorMessage}>{errorMessage}</Typography> : ""}
+            { errorMessage ? <Typography className={classes.error}>{errorMessage}</Typography> : ""}
             </div>
         </form>
     );
 };
 
-export default EditEmployee;
+export default EmployeeForm;

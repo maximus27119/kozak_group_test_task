@@ -5,8 +5,7 @@ import PrivateRoute from '../components/PrivateRoute';
 import MainPage from '../HomePage/MainPage';
 import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
-import AddEmployee from '../EmployeePages/AddEmployee';
-import EditEmployee from '../EmployeePages/EditEmployee';
+import EmployeeForm from '../EmployeePages/EmployeeForm';
 
 
 import { useDispatch } from 'react-redux';
@@ -23,8 +22,8 @@ const App = () => {
       <div className="App">
         <Router>
             <PrivateRoute exact path="/" component={MainPage} />
-            <PrivateRoute exact path="/add_employee" component={AddEmployee} />
-            <PrivateRoute exact path="/edit_employee/:id" component={EditEmployee} />
+            <PrivateRoute exact path="/add_employee" component={EmployeeForm} operationType="add"/>
+            <PrivateRoute exact path="/edit_employee/:id" component={EmployeeForm} operationType="edit"/>
             <Route path="/login" component={LoginPage} />
             <Route path="/register" component={RegisterPage} />
         </Router>
