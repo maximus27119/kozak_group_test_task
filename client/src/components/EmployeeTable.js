@@ -77,7 +77,6 @@ const EmployeeTable = (props) => {
           <TableBody>
           {employees.employees.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row) => (
             <TableRow key={row._id}>
-            {console.log(row)}
               <TableCell>
                 <Grid container>
                   <Grid>
